@@ -1,21 +1,16 @@
 import traceback
 import sys
 import datetime
+import logging
+
+logging.basicConfig(filename="newfile.log", format='%(asctime)s-%(message)s', datefmt="%b %d %Y-%H:%M:%S") 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG) 
 
 def log(function):
-# 	log_template = """
-# ==================================================
-# 	Date: %(date)s
-# 	Time: %(time)s
-# 	Function Name: %(func_name)s
-# 	Arguments: %(args)s
-# 	Keyword Arguments: %(kwargs)s
-# 	Return Value: %(ret_val)s
-# 	Traceback: %(traceback)s
-# ==================================================
-# 	"""
+
 	log_template = """
-%(date)s %(time)s %(func_name)s %(args)s %(kwargs)s %(ret_val)s %(traceback)s
+%(func_name)s %(args)s %(kwargs)s %(ret_val)s %(traceback)s
 	"""
 
 	def wrapper(*args, **kwargs):
@@ -34,8 +29,6 @@ def log(function):
 
 		finally:
 			log_data = log_template % {
-					'date': dt.strftime("%b %d"),
-					'time': dt.strftime("%H:%M:%S"),
 					'func_name': function.__name__,
 					'args': args,
 					'kwargs': kwargs,
@@ -43,7 +36,6 @@ def log(function):
 					'traceback': tb
 				}
 
-			with open("logger.log", "a") as logfile:
-				logfile.write(log_data)			
+			logger.info(log_data)
 
 	return wrapper
